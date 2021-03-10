@@ -5,16 +5,17 @@ import getWeb3 from "./getWeb3";
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0,
-         web3: null, 
-         accounts: null, 
-         contract: null,
-         name:"",
-         vaccine:"",
-         age:0,
-         adhar:0};
+  state = { web3: null, 
+            accounts: null, 
+            contract: null,
+            name:"",
+            vaccine:"",
+            age:0,
+            adhar:0,
+            records:[]
+            };
 
-  componentDidMount = async () => {
+   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
@@ -32,7 +33,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      this.setState({ web3, accounts, contract: instance }, this.getRecords);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -42,18 +43,35 @@ class App extends Component {
     }
   };
 
-  runExample = async () => {
-    const { accounts, contract } = this.state;
+  getRecords = async () => {
+    const { contract } = this.state;
 
-    // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0] });
+    const noOfFile = await contract.methods.getNo().call();
 
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
-
-    // Update state with the result.
-    this.setState({ storageValue: response });
+    for(var i=noOfFile; i>=1;i--){
+      console.log("working");
+      const record = await contract.methods.getRecordFromId(i).call();
+      this.setState({
+        records:[...this.state.records,record]
+      })
+    }
   };
+
+  clickHandler = async() => {
+    const { accounts, contract } = this.state;
+    const {name,vaccine,age,adhar} = this.state;
+    const data = "{name:"+name+",vaccine:"+vaccine+",age:"+age+",adhar:"+adhar+"}"
+    await contract.methods.uploadRecord(data).send({ from: accounts[0] });
+  }
+
+  changeHandler = (e) => {
+    const { name , value} = e.target
+    this.setState({
+      [name]:value
+    })
+  }
+
+  
 
   render() {
     if (!this.state.web3) {
@@ -62,10 +80,16 @@ class App extends Component {
     return (
       <div className="App">
         <h1>VaxChain</h1>
-        <input name="name"/>
-        <input name="vaccine" />
-        <input name="age" />
-        <input name="adhar" />
+        <div className="form">
+          <ul>
+            <li><label>Name</label><input name="name" onChange={this.changeHandler}/></li>
+            <li><label>vaccine</label><input name="vaccine" onChange={this.changeHandler}/></li>
+            <li><label>age</label><input name="age" onChange={this.changeHandler}/></li>
+            <li><label>adhar</label><input name="adhar" onChange={this.changeHandler}/></li>
+            <li><input type="submit" onClick={this.clickHandler}/></li>
+          </ul>  
+        </div>
+        {this.state.records}
       </div>
     );
   }

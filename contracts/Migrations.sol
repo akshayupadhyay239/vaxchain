@@ -2,7 +2,8 @@
 pragma solidity 0.5.16;
 
 contract Migrations {
-  address public owner;
+
+address public owner;
   uint public last_completed_migration;
 
   modifier restricted() {
@@ -16,4 +17,5 @@ contract Migrations {
   function setCompleted(uint completed) public restricted {
     last_completed_migration = completed;
   }
+  
 }

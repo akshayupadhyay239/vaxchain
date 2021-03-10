@@ -2,13 +2,21 @@
 pragma solidity 0.5.16;
 
 contract SimpleStorage {
-  uint storedData;
+ uint nonce = 0;
 
-  function set(uint x) public {
-    storedData = x;
-  }
+  mapping(uint => string) Record;
 
-  function get() public view returns (uint) {
-    return storedData;
-  }
+  function getNo() public view returns(uint no){
+      no = nonce;
+    }
+
+  function getRecordFromId(uint id) public view returns(string memory record){
+        record = Record[id];
+    }
+
+  function uploadRecord(string memory _record) public {
+        nonce++;
+        Record[nonce] = _record;     
+    }
+
 }
