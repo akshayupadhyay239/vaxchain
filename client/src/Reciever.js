@@ -4,8 +4,11 @@ function Reciever(props){
     
     const data = JSON.parse(props.rData)
     return(
-        <div>
-            <p>{props.id} {data.name} {data.vaccine} {data.age} {data.adhar}</p>
+        <div className="record">
+            <p>Name   : {data.name}</p>
+            <p>Vaccine: {data.vaccine}</p>
+            <p>Age    : {data.age}</p>
+            <p>Aadhar : {data.adhar}</p>
         </div>
         )
 }

@@ -91,8 +91,8 @@ class App extends Component {
           <label for="fage">Age</label>
           <input type="text" name="age" placeholder="Your age" onChange={this.changeHandler}/>
 
-          <label for="fadhar">Adhar no.</label>
-          <input type="text" name="adhar" placeholder="Adhar no." onChange={this.changeHandler}/>
+          <label for="fadhar">Aadhar no.</label>
+          <input type="text" name="adhar" placeholder="Aadhar no." onChange={this.changeHandler}/>
 
           <input type="submit" value="Submit" onClick={this.clickHandler} />
         </div>
