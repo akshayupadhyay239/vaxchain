@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./getWeb3";
-
+import Reciever from "./Reciever";
 import "./App.css";
 
 class App extends Component {
@@ -55,13 +55,14 @@ class App extends Component {
         records:[...this.state.records,record]
       })
     }
+    console.log(this.state.records)
   };
 
   clickHandler = async() => {
     const { accounts, contract } = this.state;
     const {name,vaccine,age,adhar} = this.state;
-    const data = "{name:"+name+",vaccine:"+vaccine+",age:"+age+",adhar:"+adhar+"}"
-    await contract.methods.uploadRecord(data).send({ from: accounts[0] });
+    const data = '{"name":"'+name+'","vaccine":"'+vaccine+'","age":'+age+',"adhar":'+adhar+'}'
+    await contract.methods.uploadRecord(String(data)).send({ from: accounts[0] });
   }
 
   changeHandler = (e) => {
@@ -81,15 +82,25 @@ class App extends Component {
       <div className="App">
         <h1>VaxChain</h1>
         <div className="form">
-          <ul>
-            <li><label>Name</label><input name="name" onChange={this.changeHandler}/></li>
-            <li><label>vaccine</label><input name="vaccine" onChange={this.changeHandler}/></li>
-            <li><label>age</label><input name="age" onChange={this.changeHandler}/></li>
-            <li><label>adhar</label><input name="adhar" onChange={this.changeHandler}/></li>
-            <li><input type="submit" onClick={this.clickHandler}/></li>
-          </ul>  
+          <label for="fname">Name</label>
+          <input type="text" name="name" placeholder="Your name" onChange={this.changeHandler}/>
+
+          <label for="fvaccine">Vaccine</label>
+          <input type="text" name="vaccine" placeholder="Vaccine" onChange={this.changeHandler}/>
+
+          <label for="fage">Age</label>
+          <input type="text" name="age" placeholder="Your age" onChange={this.changeHandler}/>
+
+          <label for="fadhar">Adhar no.</label>
+          <input type="text" name="adhar" placeholder="Adhar no." onChange={this.changeHandler}/>
+
+          <input type="submit" value="Submit" onClick={this.clickHandler} />
         </div>
-        {this.state.records}
+        
+        
+        <div className="tbl">
+          {this.state.records.map( (data , index) => <Reciever id={index+1} rData={data} /> )}
+        </div>
       </div>
     );
   }
